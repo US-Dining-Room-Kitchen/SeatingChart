@@ -75,7 +75,7 @@
     "internalId": 10,
     "displayId": "10",
     "orientation": "horizontal",
-    "gridRow": 0,
+    "gridRow": 10,
     "gridCol": 5,
     "capacity": 10
   },
@@ -83,7 +83,7 @@
     "internalId": 11,
     "displayId": "11",
     "orientation": "horizontal",
-    "gridRow": 1,
+    "gridRow": 9,
     "gridCol": 5,
     "capacity": 10
   },
@@ -91,7 +91,7 @@
     "internalId": 12,
     "displayId": "12",
     "orientation": "horizontal",
-    "gridRow": 2,
+    "gridRow": 8,
     "gridCol": 5,
     "capacity": 10
   },
@@ -99,7 +99,7 @@
     "internalId": 13,
     "displayId": "13",
     "orientation": "horizontal",
-    "gridRow": 4,
+    "gridRow": 6,
     "gridCol": 5,
     "capacity": 10
   },
@@ -115,7 +115,7 @@
     "internalId": 15,
     "displayId": "15",
     "orientation": "horizontal",
-    "gridRow": 6,
+    "gridRow": 4,
     "gridCol": 5,
     "capacity": 10
   },
@@ -123,24 +123,24 @@
     "internalId": 16,
     "displayId": "16",
     "orientation": "horizontal",
-    "gridRow": 8,
-    "gridCol": 5,
+    "gridRow": 4,
+    "gridCol": 3,
     "capacity": 10
   },
   {
     "internalId": 17,
     "displayId": "17",
     "orientation": "horizontal",
-    "gridRow": 9,
-    "gridCol": 5,
+    "gridRow": 5,
+    "gridCol": 3,
     "capacity": 10
   },
   {
     "internalId": 18,
     "displayId": "18",
     "orientation": "horizontal",
-    "gridRow": 10,
-    "gridCol": 5,
+    "gridRow": 6,
+    "gridCol": 3,
     "capacity": 10
   },
   {
