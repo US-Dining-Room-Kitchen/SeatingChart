@@ -122,8 +122,8 @@
     <script>
         // URL Notification Banner Logic
         (function() {
-            // Configuration
-            const HIDE_AFTER_DATE = new Date('2026-01-01T00:00:00');
+            // Configuration - Using UTC to ensure consistent behavior globally
+            const HIDE_AFTER_DATE = new Date('2026-01-01T00:00:00Z');
             const STORAGE_KEY = 'urlBannerDismissed';
             
             // Check if banner should be displayed
@@ -152,12 +152,16 @@
             
             // Show/hide banner based on conditions
             const banner = document.getElementById('url-notification-banner');
+            const dismissBtn = document.getElementById('dismiss-banner-btn');
+            
+            // Guard against missing elements
+            if (!banner) return;
+            
             if (shouldShowBanner()) {
                 banner.style.display = 'block';
             }
             
             // Dismiss handler
-            const dismissBtn = document.getElementById('dismiss-banner-btn');
             if (dismissBtn) {
                 dismissBtn.addEventListener('click', function() {
                     banner.style.display = 'none';
