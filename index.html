@@ -47,10 +47,130 @@
             overflow: hidden; /* Prevent body scroll */
         }
 
+        /* URL Notification Banner Styles */
+        #url-notification-banner {
+            display: none;
+        }
+        
+        .notification-banner-content {
+            position: relative;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notification-banner-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .notification-banner-message {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .notification-banner-message p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        
+        .notification-banner-dismiss {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .notification-banner-dismiss:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
     </style>
 </head>
 <body>
+    <!-- URL Change Notification Banner -->
+    <div id="url-notification-banner">
+        <div class="notification-banner-content">
+            <div class="notification-banner-inner">
+                <div class="notification-banner-message">
+                    <p>
+                        ⚠️ Important: Our site URL has changed! Please update your bookmarks and any saved links to the new URL. 
+                        <strong>The old URL will stop redirecting on January 1st, 2026.</strong>
+                    </p>
+                </div>
+                <button id="dismiss-banner-btn" class="notification-banner-dismiss" title="Dismiss this notification">
+                    ×
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // URL Notification Banner Logic
+        (function() {
+            // Configuration - Using UTC to ensure consistent behavior globally
+            const HIDE_AFTER_DATE = new Date('2026-01-01T00:00:00Z');
+            const STORAGE_KEY = 'urlBannerDismissed';
+            
+            // Check if banner should be displayed
+            function shouldShowBanner() {
+                const currentDate = new Date();
+                const isDismissed = getFromStorage(STORAGE_KEY) === 'true';
+                return currentDate < HIDE_AFTER_DATE && !isDismissed;
+            }
+            
+            // Safe localStorage wrapper
+            function getFromStorage(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            function setInStorage(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    // Silently fail if localStorage is unavailable
+                }
+            }
+            
+            // Show/hide banner based on conditions
+            const banner = document.getElementById('url-notification-banner');
+            const dismissBtn = document.getElementById('dismiss-banner-btn');
+            
+            // Guard against missing elements
+            if (!banner) return;
+            
+            if (shouldShowBanner()) {
+                banner.style.display = 'block';
+            }
+            
+            // Dismiss handler
+            if (dismissBtn) {
+                dismissBtn.addEventListener('click', function() {
+                    banner.style.display = 'none';
+                    setInStorage(STORAGE_KEY, 'true');
+                });
+            }
+        })();
+    </script>
+
     <div id="root"></div>
 
     <script type="text/babel">
