@@ -25,33 +25,44 @@ jobs:
           cp -r *.html *.gif layouts dist/ 2>/dev/null || true
           ls -la dist/
 
-      - name: Deploy PR Preview
-        uses: rossjrw/pr-preview-action@v1
+      - name: Deploy to gh-pages/pr/pr-${{ github.event.pull_request.number }}
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          source-dir: dist
-          preview-branch: gh-pages
-          umbrella-dir: pr
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: dist
+          destination_dir: pr/pr-${{ github.event.pull_request.number }}
+          keep_files: true
 
-      - name: Ensure .nojekyll exists in gh-pages root
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin gh-pages:gh-pages 2>/dev/null || git checkout --orphan gh-pages
-          git checkout gh-pages 2>/dev/null || true
-          touch .nojekyll
-          git add .nojekyll
-          if ! git diff --staged --quiet; then
-            git commit -m "Add .nojekyll to enable GitHub Pages"
-            git push origin gh-pages
-          fi
+      - name: Comment PR with preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const repo = context.payload.repository.name;
+            const owner = context.payload.repository.owner.login;
+            const url = `https://${owner}.github.io/${repo}/pr/pr-${prNumber}/`;
+            
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: owner,
+              repo: repo,
+              body: `🚀 Preview deployed to: ${url}`
+            });
 
   cleanup:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
-      - name: Remove PR Preview
-        uses: rossjrw/pr-preview-action@v1
+      - uses: actions/checkout@v4
         with:
-          action: remove
-          preview-branch: gh-pages
-          umbrella-dir: pr
+          ref: gh-pages
+
+      - name: Remove PR preview directory
+        run: |
+          rm -rf pr/pr-${{ github.event.pull_request.number }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove preview for PR #${{ github.event.pull_request.number }}" || true
+          git push origin gh-pages
