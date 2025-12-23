@@ -1,4 +1,4 @@
-name: PR Preview (Vite -> GitHub Pages)
+name: PR Preview (Static -> GitHub Pages)
 
 on:
   pull_request:
@@ -19,25 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Build (PR base)
-        run: |
-          REPO="${{ github.event.repository.name }}"
-          PR="${{ github.event.pull_request.number }}"
-          npm run build -- --base="/${REPO}/pr/pr-${PR}/"
-
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: ./dist
+          source-dir: .
           preview-branch: gh-pages
           umbrella-dir: pr
+          custom-url: https://us-dining-room-kitchen.github.io/SeatingChart/pr/pr-${{ github.event.pull_request.number }}/
 
   cleanup:
     if: github.event.action == 'closed'
