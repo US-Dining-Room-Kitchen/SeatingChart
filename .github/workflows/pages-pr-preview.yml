@@ -23,7 +23,6 @@ jobs:
         run: |
           mkdir -p dist
           cp -r *.html *.gif layouts dist/ 2>/dev/null || true
-          cp .nojekyll dist/ 2>/dev/null || true
           ls -la dist/
 
       - name: Deploy PR Preview
@@ -32,6 +31,15 @@ jobs:
           source-dir: dist
           preview-branch: gh-pages
           umbrella-dir: pr
+
+      - name: Ensure .nojekyll exists in gh-pages root
+        run: |
+          git fetch origin gh-pages:gh-pages || true
+          git checkout gh-pages
+          touch .nojekyll
+          git add .nojekyll
+          git diff --staged --quiet || git commit -m "Add .nojekyll to enable GitHub Pages"
+          git push origin gh-pages
 
   cleanup:
     if: github.event.action == 'closed'
