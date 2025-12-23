@@ -17,13 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p dist
+          cp -r *.html *.gif layouts dist/ 2>/dev/null || true
+          cp .nojekyll dist/ 2>/dev/null || true
+          ls -la dist/
+
       - name: Deploy to gh-pages root
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: .
+          publish_dir: dist
           force_orphan: true
-          exclude_assets: |
-            .github
-            test

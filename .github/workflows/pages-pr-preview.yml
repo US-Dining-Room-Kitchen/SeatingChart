@@ -19,10 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p dist
+          cp -r *.html *.gif layouts dist/ 2>/dev/null || true
+          cp .nojekyll dist/ 2>/dev/null || true
+          ls -la dist/
+
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: .
+          source-dir: dist
           preview-branch: gh-pages
           umbrella-dir: pr
 
