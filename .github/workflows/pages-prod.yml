@@ -24,6 +24,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: .
           force_orphan: true
-          exclude: |
+          exclude_assets: |
             .github
             test

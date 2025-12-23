@@ -25,7 +25,6 @@ jobs:
           source-dir: .
           preview-branch: gh-pages
           umbrella-dir: pr
-          custom-url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr/pr-${{ github.event.pull_request.number }}/
 
   cleanup:
     if: github.event.action == 'closed'
