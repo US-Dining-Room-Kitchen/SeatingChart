@@ -34,12 +34,16 @@ jobs:
 
       - name: Ensure .nojekyll exists in gh-pages root
         run: |
-          git fetch origin gh-pages:gh-pages || true
-          git checkout gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages:gh-pages 2>/dev/null || git checkout --orphan gh-pages
+          git checkout gh-pages 2>/dev/null || true
           touch .nojekyll
           git add .nojekyll
-          git diff --staged --quiet || git commit -m "Add .nojekyll to enable GitHub Pages"
-          git push origin gh-pages
+          if ! git diff --staged --quiet; then
+            git commit -m "Add .nojekyll to enable GitHub Pages"
+            git push origin gh-pages
+          fi
 
   cleanup:
     if: github.event.action == 'closed'
