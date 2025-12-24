@@ -7,7 +7,7 @@ import { LayoutCreator } from './pages/LayoutCreator';
  */
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<SeatingPlanner />} />
         <Route path="/layout-creator" element={<LayoutCreator />} />
