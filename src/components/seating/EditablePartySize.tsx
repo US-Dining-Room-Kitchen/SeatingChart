@@ -1,5 +1,5 @@
 import React from 'react';
-import { Guest } from '../../types';
+import type { Guest } from '../../types';
 import { UserIcon } from '../ui/icons/UserIcon';
 
 interface EditablePartySizeProps {

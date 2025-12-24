@@ -1,4 +1,4 @@
-import { Table, LayoutOption } from '../types';
+import type { Table, LayoutOption } from '../types';
 
 /**
  * Parse layout data from a JSON array

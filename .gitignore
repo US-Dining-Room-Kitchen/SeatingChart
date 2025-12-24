@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Old HTML files (kept for reference but not committed)
+index.html.old
+LayoutCreator.html
+

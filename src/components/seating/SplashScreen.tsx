@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutOption } from '../../types';
+import type { LayoutOption } from '../../types';
 
 interface SplashScreenProps {
   layoutOptions: LayoutOption[];

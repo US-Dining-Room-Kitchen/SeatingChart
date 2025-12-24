@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react';
+import { useEffect, type RefObject } from 'react';
 
 interface UsePinchZoomOptions {
   minScale?: number;
@@ -19,7 +19,7 @@ interface UsePinchZoomReturn {
  * @param options - Optional configuration for min/max scale limits
  */
 export function usePinchZoom(
-  containerRef: RefObject<HTMLElement>,
+  containerRef: RefObject<HTMLElement | null>,
   scaleRef: RefObject<number>,
   setScale: (scale: number) => void,
   setIsPinching: (isPinching: boolean) => void,

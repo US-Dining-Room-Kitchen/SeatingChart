@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, GuestWithAssignment } from '../../types';
+import type { Table, GuestWithAssignment } from '../../types';
 
 interface TableVisualProps {
   table: Table;

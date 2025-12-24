@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import { Guest } from '../types';
+import type { Guest } from '../types';
 
 /**
  * Parse guest data from a CSV or Excel file

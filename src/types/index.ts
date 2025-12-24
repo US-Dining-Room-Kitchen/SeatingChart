@@ -1,4 +1,12 @@
 /**
+ * Merged guest information
+ */
+export interface MergedFromData {
+  guest: Guest;
+  assignments: Assignment[];
+}
+
+/**
  * Represents a guest party in the seating chart system
  */
 export interface Guest {
@@ -10,8 +18,8 @@ export interface Guest {
   size: number;
   /** Optional notes or special requirements */
   notes?: string;
-  /** Array of guest IDs that were merged into this party */
-  mergedFrom?: string[];
+  /** Information about merged parties if this guest is a merged group */
+  mergedFrom?: MergedFromData[];
 }
 
 /**

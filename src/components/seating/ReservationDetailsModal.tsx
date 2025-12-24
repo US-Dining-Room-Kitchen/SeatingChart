@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Assignments, GuestWithAssignment } from '../../types';
+import type { Table, Assignments, GuestWithAssignment } from '../../types';
 import { EditablePartySize } from './EditablePartySize';
 import { EditableAssignedSeats } from './EditableAssignedSeats';
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Guest } from '../../types';
+import type { Guest } from '../../types';
 import { PencilIcon } from '../ui/icons/PencilIcon';
 
 interface EditableNoteProps {
