@@ -1,0 +1,170 @@
+[
+  {
+    "internalId": 1,
+    "displayId": "1",
+    "orientation": "horizontal",
+    "gridRow": 0,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 2,
+    "displayId": "2",
+    "orientation": "horizontal",
+    "gridRow": 1,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 3,
+    "displayId": "3",
+    "orientation": "horizontal",
+    "gridRow": 2,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 4,
+    "displayId": "4",
+    "orientation": "horizontal",
+    "gridRow": 4,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 5,
+    "displayId": "5",
+    "orientation": "horizontal",
+    "gridRow": 5,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 6,
+    "displayId": "6",
+    "orientation": "horizontal",
+    "gridRow": 6,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 7,
+    "displayId": "7",
+    "orientation": "horizontal",
+    "gridRow": 8,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 8,
+    "displayId": "8",
+    "orientation": "horizontal",
+    "gridRow": 9,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 9,
+    "displayId": "9",
+    "orientation": "horizontal",
+    "gridRow": 10,
+    "gridCol": 7,
+    "capacity": 10
+  },
+  {
+    "internalId": 10,
+    "displayId": "10",
+    "orientation": "horizontal",
+    "gridRow": 10,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 11,
+    "displayId": "11",
+    "orientation": "horizontal",
+    "gridRow": 9,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 12,
+    "displayId": "12",
+    "orientation": "horizontal",
+    "gridRow": 8,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 13,
+    "displayId": "13",
+    "orientation": "horizontal",
+    "gridRow": 6,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 14,
+    "displayId": "14",
+    "orientation": "horizontal",
+    "gridRow": 5,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 15,
+    "displayId": "15",
+    "orientation": "horizontal",
+    "gridRow": 4,
+    "gridCol": 5,
+    "capacity": 10
+  },
+  {
+    "internalId": 16,
+    "displayId": "16",
+    "orientation": "horizontal",
+    "gridRow": 4,
+    "gridCol": 3,
+    "capacity": 10
+  },
+  {
+    "internalId": 17,
+    "displayId": "17",
+    "orientation": "horizontal",
+    "gridRow": 5,
+    "gridCol": 3,
+    "capacity": 10
+  },
+  {
+    "internalId": 18,
+    "displayId": "18",
+    "orientation": "horizontal",
+    "gridRow": 6,
+    "gridCol": 3,
+    "capacity": 10
+  },
+  {
+    "internalId": 19,
+    "displayId": "19",
+    "orientation": "horizontal",
+    "gridRow": 8,
+    "gridCol": 3,
+    "capacity": 10
+  },
+  {
+    "internalId": 20,
+    "displayId": "20",
+    "orientation": "horizontal",
+    "gridRow": 9,
+    "gridCol": 3,
+    "capacity": 10
+  },
+  {
+    "internalId": 21,
+    "displayId": "21",
+    "orientation": "horizontal",
+    "gridRow": 10,
+    "gridCol": 3,
+    "capacity": 10
+  }
+]
