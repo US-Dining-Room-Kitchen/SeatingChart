@@ -193,7 +193,8 @@ npm run lint         # Run ESLint
 
 ### Configuration
 - No environment variables needed
-- All config in `vite.config.ts`, `tailwind.config.js`
+- Build config in `vite.config.ts`
+- Tailwind CSS v4 uses CSS-based configuration via `@theme` blocks in `src/styles/index.css`
 - Public assets in `public/` folder
 - Base URL configurable in Vite config
 

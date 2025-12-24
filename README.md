@@ -141,7 +141,6 @@ SeatingChart/
 ├── package.json
 ├── vite.config.ts            # Vite configuration
 ├── tsconfig.json             # TypeScript configuration
-├── tailwind.config.js        # Tailwind CSS configuration
 ├── postcss.config.js         # PostCSS configuration
 └── README.md
 ```
