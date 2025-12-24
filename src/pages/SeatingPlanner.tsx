@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import type { Guest, Table, Assignments, LayoutOption, GuestWithAssignment } from '../types';
 import { parseGuestFile } from '../utils/fileParser';
@@ -40,6 +41,8 @@ interface TableAssignmentData {
 }
 
 export const SeatingPlanner: React.FC = () => {
+  const navigate = useNavigate();
+  
   // State management
   const [tables, setTables] = useState<Table[]>([]);
   const [guests, setGuests] = useState<Guest[]>([]);
@@ -626,8 +629,8 @@ export const SeatingPlanner: React.FC = () => {
               onImportLayout={() => layoutFileInputRef.current?.click()}
               onImportGuests={() => guestFileInputRef.current?.click()}
               onCreateLayout={() => {
-                // Navigate to layout creator - will be handled by router
-                window.location.href = '/layout-creator';
+                // Navigate to layout creator using React Router
+                navigate('/layout-creator');
               }}
             />
             <input

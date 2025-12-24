@@ -5,10 +5,6 @@ interface UsePinchZoomOptions {
   maxScale?: number;
 }
 
-interface UsePinchZoomReturn {
-  // Hook handles side effects internally, no return needed
-}
-
 /**
  * Custom hook for handling pinch-to-zoom gestures on touch devices
  * 
@@ -24,7 +20,7 @@ export function usePinchZoom(
   setScale: (scale: number) => void,
   setIsPinching: (isPinching: boolean) => void,
   options: UsePinchZoomOptions = {}
-): UsePinchZoomReturn {
+): void {
   const { minScale = 0.2, maxScale = 2 } = options;
 
   useEffect(() => {
@@ -93,6 +89,4 @@ export function usePinchZoom(
       container.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, [containerRef, scaleRef, setScale, setIsPinching, minScale, maxScale]);
-
-  return {};
 }
