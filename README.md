@@ -51,6 +51,30 @@ npm run dev
 
 The application will be available at `http://localhost:5173`
 
+## Pull Request Previews
+
+When you open a pull request, GitHub Actions will automatically:
+1. Build the application
+2. Create a build artifact
+3. Post a comment with instructions for testing
+
+### Option 1: Download Build Artifact
+1. Go to the PR's "Checks" tab
+2. Find the "Build PR" workflow
+3. Download the `pr-build-{number}` artifact
+4. Extract and serve: `npx serve dist`
+
+### Option 2: Test Locally
+```bash
+git fetch origin pull/{PR_NUMBER}/head:pr-{PR_NUMBER}
+git checkout pr-{PR_NUMBER}
+npm install
+npm run dev
+```
+
+### Option 3: Netlify Preview (if configured)
+If Netlify is set up with `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` secrets, PR previews will be automatically deployed and a preview URL will be posted as a comment.
+
 ## Build for Production
 
 Create an optimized production build:
