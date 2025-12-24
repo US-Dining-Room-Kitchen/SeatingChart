@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import type { Table } from '../types';
+
+const GRID_ROWS = 12;
+const GRID_COLS = 8;
+
+/**
+ * Page for creating and editing table layouts visually
+ */
+export const LayoutCreator: React.FC = () => {
+  const [tables, setTables] = useState<Table[]>([]);
+
+  const handleCellClick = (row: number, col: number) => {
+    const existingTable = tables.find(t => t.gridRow === row && t.gridCol === col);
+    
+    // If clicking an existing table, rotate it
+    if (existingTable) {
+      setTables(prev => prev.map(t => 
+        t.internalId === existingTable.internalId 
+          ? { ...t, orientation: t.orientation === 'vertical' ? 'horizontal' : 'vertical' } 
+          : t
+      ));
+      return;
+    }
+
+    // Add a new table
+    const existingIds = new Set(tables.map(t => Number(t.internalId)));
+    let newId = 1;
+    while (existingIds.has(newId)) {
+      newId++;
+    }
+
+    const newTable: Table = { 
+      internalId: newId, 
+      displayId: `${newId}`, 
+      capacity: 10, 
+      orientation: 'horizontal', 
+      gridRow: row, 
+      gridCol: col 
+    };
+    setTables(prev => [...prev, newTable].sort((a, b) => Number(a.internalId) - Number(b.internalId)));
+  };
+
+  const handleDelete = (e: React.MouseEvent, tableId: string | number) => {
+    e.stopPropagation();
+    setTables(prev => prev.filter(t => t.internalId !== tableId));
+  };
+
+  const handleExport = () => {
+    const exportData = tables.map(({ internalId, displayId, orientation, gridRow, gridCol, capacity }) => ({
+      internalId,
+      displayId,
+      orientation,
+      gridRow,
+      gridCol,
+      capacity
+    }));
+    
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(exportData, null, 2)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = "layout.json";
+    link.click();
+  };
+  
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to clear the entire layout?")) {
+      setTables([]);
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Seating Chart Layout Creator</h1>
+        <p className="text-gray-600 mt-2">
+          Click an empty cell to add a table. Click a table to rotate it. Click the 'x' to delete.
+        </p>
+      </div>
+
+      <div className="flex justify-center mb-6 space-x-4">
+        <button 
+          onClick={() => window.open('/documentation.html', '_blank')} 
+          className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
+        >
+          Help
+        </button>
+        <button 
+          onClick={handleExport} 
+          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+        >
+          Export layout.json
+        </button>
+        <button 
+          onClick={handleReset} 
+          className="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all"
+        >
+          Reset Layout
+        </button>
+      </div>
+
+      <div className="bg-white p-4 rounded-xl shadow-lg">
+        <div 
+          className="grid gap-2" 
+          style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))` }}
+        >
+          {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
+            const row = Math.floor(index / GRID_COLS);
+            const col = index % GRID_COLS;
+            const tableHere = tables.find(t => t.gridRow === row && t.gridCol === col);
+            
+            return (
+              <div 
+                key={`${row}-${col}`} 
+                onClick={() => handleCellClick(row, col)} 
+                className="w-full h-24 bg-gray-100 rounded border-2 border-dashed border-gray-300 hover:bg-green-100 hover:border-green-400 cursor-pointer flex items-center justify-center transition-colors"
+              >
+                {tableHere ? (
+                  <div 
+                    className={`relative rounded p-1 ${tableHere.orientation === 'vertical' ? 'w-8 h-16' : 'w-16 h-8'} bg-green-400 flex items-center justify-center shadow-md`}
+                  >
+                    <span className="text-white font-bold text-sm">{tableHere.displayId}</span>
+                    <button 
+                      onClick={(e) => handleDelete(e, tableHere.internalId)} 
+                      className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold leading-none hover:bg-red-700"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 bg-gray-300 rounded-full opacity-50">+</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
