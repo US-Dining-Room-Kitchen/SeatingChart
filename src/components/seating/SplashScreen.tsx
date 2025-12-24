@@ -20,7 +20,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   onStart 
 }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div 
         className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm space-y-4" 
         onClick={e => e.stopPropagation()}
