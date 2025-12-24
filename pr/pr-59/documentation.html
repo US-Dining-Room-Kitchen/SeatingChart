@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Seating Planner | User Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
+        
+        :root {
+            --fluent-brand: #0078d4;
+            --fluent-bg: #fafafa;
+            --fluent-surface: #ffffff;
+            --fluent-stroke: #e0e0e0;
+            --fluent-text: #242424;
+            --fluent-text-secondary: #616161;
+            --fluent-radius: 8px;
+            --fluent-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 0 2px rgba(0,0,0,0.04);
+            --fluent-shadow-high: 0 8px 16px rgba(0,0,0,0.12), 0 0 2px rgba(0,0,0,0.04);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            scroll-behavior: smooth;
+            color: var(--fluent-text);
+            background-color: var(--fluent-bg);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.1s ease;
+        }
+        
+        .nav-link:hover { background-color: #f0f0f0; }
+
+        .nav-link.active {
+            color: var(--fluent-brand);
+            background-color: #f0f7ff;
+            font-weight: 600;
+        }
+
+        .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 25%;
+            height: 50%;
+            width: 3px;
+            background-color: var(--fluent-brand);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ui-mockup {
+            background: var(--fluent-surface);
+            border: 1px solid var(--fluent-stroke);
+            border-radius: var(--fluent-radius);
+            box-shadow: var(--fluent-shadow-high);
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .table-container {
+            border: 1px solid var(--fluent-stroke);
+            border-radius: var(--fluent-radius);
+            overflow: hidden;
+            background: var(--fluent-surface);
+            box-shadow: var(--fluent-shadow);
+        }
+
+        .message-bar {
+            border-radius: var(--fluent-radius);
+            border: 1px solid #e0e0e0;
+            display: flex;
+            padding: 12px 16px;
+            gap: 12px;
+            background-color: #f5f5f5;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        section {
+            scroll-margin-top: 2rem;
+            padding-bottom: 5rem;
+        }
+
+        @media (max-width: 1024px) {
+            #sidebar { transform: translateX(-100%); }
+            #sidebar.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden flex items-center p-4 bg-white border-b sticky top-0 z-50 shadow-sm">
+        <button id="menu-toggle" class="p-2 mr-4 text-slate-600 hover:bg-slate-100 rounded-md">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <div class="flex items-center gap-2">
+            <i class="fas fa-chair text-[#0078d4] text-xl"></i>
+            <span class="font-bold text-slate-900">Seating Planner</span>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#f3f3f3] border-r border-[#e0e0e0] z-40 transition-transform lg:translate-x-0 overflow-y-auto">
+            <div class="p-6">
+                <div class="hidden lg:flex items-center gap-3 mb-10">
+                    <div class="bg-[#0078d4] text-white p-2 rounded-md shadow-sm">
+                        <i class="fas fa-chair"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-tight text-[#242424]">Seating Planner</span>
+                </div>
+
+                <nav class="space-y-1">
+                    <div class="text-[11px] font-bold text-[#616161] uppercase tracking-wider px-3 mb-3">Documentation</div>
+                    <a href="#overview" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">1. Overview</a>
+                    <a href="#getting-started" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">2. Getting Started</a>
+                    <a href="#main-interface" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">3. Main Interface</a>
+                    <a href="#mobile-features" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">4. Mobile Features</a>
+                    <a href="#working-guests" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">5. Working with Guests</a>
+                    <a href="#assignments" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">6. Table Assignments</a>
+                    <a href="#multi-table" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">7. Multi-Table Parties</a>
+                    <a href="#merge-unmerge" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">8. Merging & Unmerging</a>
+                    <a href="#custom-layouts" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">9. Creating Layouts</a>
+                    <a href="#importing" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">10. Importing Data</a>
+                    <a href="#best-practices" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">11. Tips & Best Practices</a>
+                    <a href="#troubleshooting" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-[#424242]">12. Troubleshooting</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-72 bg-white min-h-screen">
+            <div class="max-w-4xl mx-auto px-6 py-12 lg:px-16 lg:py-24">
+                
+                <!-- Section 1: Overview -->
+                <section id="overview">
+                    <div class="mb-12">
+                        <span class="inline-block px-2 py-0.5 bg-[#f0f7ff] text-[#0078d4] rounded text-xs font-semibold mb-4 tracking-wide uppercase">System Documentation</span>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-[#242424] mb-6 tracking-tight">
+                            Visual Seating <span class="text-[#0078d4]">Planner</span>
+                        </h1>
+                        <p class="text-lg text-[#616161] leading-relaxed max-w-2xl">
+                            Efficiently manage guest seating arrangements for events and gatherings with an interactive floor plan and intuitive guest tracking.
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                        <div class="p-5 border border-[#e0e0e0] rounded-lg bg-[#fafafa]">
+                            <i class="fas fa-map text-[#0078d4] mb-3 block text-xl"></i>
+                            <h4 class="font-bold text-sm mb-1">Visual Floor Plan</h4>
+                            <p class="text-xs text-[#616161]">Interactive map with real-time occupancy updates.</p>
+                        </div>
+                        <div class="p-5 border border-[#e0e0e0] rounded-lg bg-[#fafafa]">
+                            <i class="fas fa-users text-[#0078d4] mb-3 block text-xl"></i>
+                            <h4 class="font-bold text-sm mb-1">Guest Management</h4>
+                            <p class="text-xs text-[#616161]">Track party sizes, special notes, and merge groups.</p>
+                        </div>
+                        <div class="p-5 border border-[#e0e0e0] rounded-lg bg-[#fafafa]">
+                            <i class="fas fa-file-import text-[#0078d4] mb-3 block text-xl"></i>
+                            <h4 class="font-bold text-sm mb-1">Import Support</h4>
+                            <p class="text-xs text-[#616161]">Directly load guest lists from Excel and CSV files.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-xl mb-4 text-[#242424]">Key Features</h3>
+                    <ul class="grid md:grid-cols-2 gap-4 text-sm text-[#424242]">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-green-600"></i> Drag-and-drop table assignment</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-green-600"></i> Mobile Responsive & Pinch Zoom</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-green-600"></i> Custom Table Arrangements (JSON)</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-green-600"></i> Estimated table requirements</li>
+                    </ul>
+                </section>
+
+                <!-- Section 2: Getting Started -->
+                <section id="getting-started">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">2. Getting Started</h2>
+                    
+                    <div class="space-y-12">
+                        <div class="flex gap-6">
+                            <div class="w-8 h-8 rounded bg-[#0078d4] text-white flex items-center justify-center font-bold flex-shrink-0">1</div>
+                            <div>
+                                <h4 class="font-bold text-[#242424] mb-1">Launch Application</h4>
+                                <p class="text-sm text-[#616161]">Open <code>index.html</code> in any modern browser (Chrome, Firefox, or Safari recommended).</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6">
+                            <div class="w-8 h-8 rounded bg-[#0078d4] text-white flex items-center justify-center font-bold flex-shrink-0">2</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-[#242424] mb-4">Initial Setup Screen</h4>
+                                <div class="table-container max-w-md">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="bg-[#fafafa] border-b">
+                                            <tr><th class="p-3">Option</th><th class="p-3">Description</th></tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[#f0f0f0]">
+                                            <tr><td class="p-3 font-semibold">Select Layout</td><td class="p-3">Choose pre-configured floor plans.</td></tr>
+                                            <tr><td class="p-3 font-semibold">Import Guests</td><td class="p-3">Load list from XLSX/CSV.</td></tr>
+                                            <tr><td class="p-3 font-semibold">Start</td><td class="p-3">Begin assignments.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6">
+                            <div class="w-8 h-8 rounded bg-[#0078d4] text-white flex items-center justify-center font-bold flex-shrink-0">3</div>
+                            <div>
+                                <h4 class="font-bold text-[#242424] mb-1">Select a Layout</h4>
+                                <p class="text-sm text-[#616161]">Choose from <strong>Patterson</strong>, <strong>Wallkill</strong>, or <strong>Warwick</strong> pre-configured locations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Main Interface -->
+                <section id="main-interface">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">3. Main Interface</h2>
+                    <h3 class="text-xs font-bold text-[#616161] mb-6 uppercase tracking-widest">Interface Breakdown</h3>
+
+                    <div class="ui-mockup">
+                        <svg viewBox="0 0 800 450" class="w-full h-auto bg-[#fafafa]">
+                            <!-- Header -->
+                            <rect x="0" y="0" width="800" height="48" fill="#ffffff" stroke="#e0e0e0" />
+                            <rect x="20" y="16" width="100" height="16" rx="4" fill="#f3f3f3" />
+                            <rect x="650" y="12" width="120" height="24" rx="4" fill="#0078d4" opacity="0.1" />
+
+                            <!-- Guest List (Left) -->
+                            <rect x="0" y="48" width="240" height="402" fill="#fcfcfc" stroke="#e0e0e0" />
+                            <text x="120" y="80" font-family="Segoe UI" font-size="12" font-weight="600" fill="#616161" text-anchor="middle">GUEST LIST PANEL</text>
+                            
+                            <!-- Cards -->
+                            <rect x="20" y="100" width="200" height="60" rx="6" fill="#ffffff" stroke="#e0e0e0" />
+                            <rect x="20" y="170" width="200" height="60" rx="6" fill="#ffffff" stroke="#e0e0e0" />
+                            <rect x="20" y="240" width="200" height="60" rx="6" fill="#0078d4" opacity="0.1" stroke="#0078d4" />
+
+                            <!-- Floor Plan (Right) -->
+                            <text x="520" y="220" font-family="Segoe UI" font-size="14" font-weight="600" fill="#d1d1d1" text-anchor="middle">INTERACTIVE FLOOR PLAN</text>
+                            
+                            <!-- Tables -->
+                            <rect x="300" y="100" width="100" height="60" rx="30" fill="#ffffff" stroke="#107c10" stroke-width="2" /> <!-- Green Table -->
+                            <rect x="450" y="100" width="100" height="60" rx="30" fill="#ffffff" stroke="#d83b01" stroke-width="2" /> <!-- Red Table -->
+                            <rect x="600" y="100" width="100" height="60" rx="30" fill="#ffffff" stroke="#ffb900" stroke-width="2" /> <!-- Yellow Table -->
+                        </svg>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div>
+                            <h4 class="font-bold text-sm mb-4">Color Coding Guide</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-sm">
+                                    <span class="w-3 h-3 rounded-full bg-green-600"></span> <strong>Green Table:</strong> 7+ seats available
+                                </li>
+                                <li class="flex items-center gap-3 text-sm">
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span> <strong>Yellow Table:</strong> 3-6 seats available
+                                </li>
+                                <li class="flex items-center gap-3 text-sm">
+                                    <span class="w-3 h-3 rounded-full bg-red-600"></span> <strong>Red Table:</strong> 2 or fewer seats
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm mb-4">Interactive Elements</h4>
+                            <p class="text-xs text-[#616161] leading-relaxed mb-4">Clicking a Guest Card selects that party. Clicking an interactive table assigns the selected party to those seats.</p>
+                            <div class="message-bar">
+                                <i class="fas fa-info-circle text-[#0078d4] mt-1"></i>
+                                <p class="text-xs font-semibold">Top Navbar: Displays Estimated Tables needed for remaining guests.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Mobile Features -->
+                <section id="mobile-features">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">4. Mobile Features</h2>
+                    
+                    <div class="mb-12">
+                        <div class="message-bar bg-blue-50 border-blue-200">
+                            <i class="fas fa-mobile-alt text-[#0078d4] text-xl"></i>
+                            <div>
+                                <h4 class="font-bold text-sm text-[#242424] mb-1">Optimized for Mobile Workflow</h4>
+                                <p class="text-xs text-[#616161] leading-relaxed">
+                                    On mobile devices, constantly switching between the Guest List and Map View to assign arriving guests can be tedious. 
+                                    The mobile-optimized features below streamline the assignment process by keeping critical information accessible 
+                                    and reducing the need to navigate back and forth between views.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-12">
+                        <!-- Mobile Quick Assign Panel -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-md">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#242424]">Mobile Quick Assign Panel</h3>
+                                    <p class="text-xs text-[#616161]">Available on mobile devices only (hidden on tablets and desktops)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pl-13">
+                                <p class="text-sm text-[#424242] mb-4 leading-relaxed">
+                                    A floating bottom panel that provides quick access to all unassigned guests while viewing the map. 
+                                    This eliminates the need to switch back to the List View to select a guest.
+                                </p>
+                                
+                                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded-lg p-6 mb-4">
+                                    <h4 class="font-bold text-xs text-[#616161] mb-4 uppercase tracking-widest">How to Use</h4>
+                                    <ol class="space-y-3 text-sm text-[#424242]">
+                                        <li class="flex gap-3">
+                                            <span class="font-bold text-[#0078d4] flex-shrink-0">01</span>
+                                            <span>While on the Map View, tap the <strong>floating users icon</strong> <i class="fas fa-users text-[#0078d4]"></i> in the bottom-right corner to open the Quick Assign Panel.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <span class="font-bold text-[#0078d4] flex-shrink-0">02</span>
+                                            <span>Scroll horizontally through the list of unassigned guests displayed as pill-shaped buttons.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <span class="font-bold text-[#0078d4] flex-shrink-0">03</span>
+                                            <span>Each guest button shows their name and the number of seats remaining to assign (e.g., "Smith Party • 4 seats").</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <span class="font-bold text-[#0078d4] flex-shrink-0">04</span>
+                                            <span>Tap a guest to select them, then tap a table on the map to assign them.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <span class="font-bold text-[#0078d4] flex-shrink-0">05</span>
+                                            <span>Tap the <strong>×</strong> button on the panel to close it.</span>
+                                        </li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-xs">
+                                    <i class="fas fa-lightbulb text-amber-600 mt-0.5"></i>
+                                    <p class="text-amber-900"><strong>Pro Tip:</strong> The Quick Assign Panel automatically updates as guests are assigned, showing only those who still need seating.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Guest Banner -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center font-bold shadow-md">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#242424]">Selected Guest Banner</h3>
+                                    <p class="text-xs text-[#616161]">Context-aware header (mobile only)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pl-13">
+                                <p class="text-sm text-[#424242] mb-4 leading-relaxed">
+                                    When you select a guest, a banner appears at the top of the Map View displaying the guest's name and remaining seats. 
+                                    This persistent reminder helps you stay focused on the current assignment.
+                                </p>
+                                
+                                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded-lg p-6 mb-4">
+                                    <h4 class="font-bold text-xs text-[#616161] mb-4 uppercase tracking-widest">Features</h4>
+                                    <ul class="space-y-3 text-sm text-[#424242]">
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-check text-green-600 mt-1"></i>
+                                            <span><strong>Guest Information:</strong> Displays selected guest name and remaining seat count.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-check text-green-600 mt-1"></i>
+                                            <span><strong>Navigation Arrows:</strong> Use <i class="fas fa-chevron-left"></i> Previous and Next <i class="fas fa-chevron-right"></i> buttons to cycle through unassigned guests without leaving the map.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-check text-green-600 mt-1"></i>
+                                            <span><strong>Close Button:</strong> Tap <strong>×</strong> to deselect the current guest and dismiss the banner.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Auto-Return to List View -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center font-bold shadow-md">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#242424]">Auto-Return to List View</h3>
+                                    <p class="text-xs text-[#616161]">Smart navigation for efficient workflow</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pl-13">
+                                <p class="text-sm text-[#424242] mb-4 leading-relaxed">
+                                    When you fully assign a guest (all their seats are allocated) on a mobile device, the app automatically 
+                                    switches back to the List View. This intelligent behavior helps you quickly locate and select the next 
+                                    arriving guest without manual navigation.
+                                </p>
+                                
+                                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded-lg p-6">
+                                    <h4 class="font-bold text-xs text-[#616161] mb-3 uppercase tracking-widest">Workflow Example</h4>
+                                    <div class="space-y-2 text-xs">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">1</span>
+                                            <span class="text-[#424242]">Select "Smith Party (4 seats)" from List View</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">2</span>
+                                            <span class="text-[#424242]">App switches to Map View automatically</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold flex-shrink-0">3</span>
+                                            <span class="text-[#424242]">Tap Table 5 to assign all 4 seats</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold flex-shrink-0">✓</span>
+                                            <span class="text-[#424242]"><strong>App returns to List View</strong> — ready for the next guest</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg text-xs">
+                                    <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
+                                    <p class="text-blue-900"><strong>Note:</strong> This feature only activates on mobile devices (screen width less than 1024px). Desktop users remain on the Map View.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swipe Gestures -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 text-white flex items-center justify-center font-bold shadow-md">
+                                    <i class="fas fa-hand-pointer"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#242424]">Swipe Gestures</h3>
+                                    <p class="text-xs text-[#616161]">Touch-based guest navigation (mobile only)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pl-13">
+                                <p class="text-sm text-[#424242] mb-4 leading-relaxed">
+                                    Quickly navigate between unassigned guests using intuitive swipe gestures on the Map View. 
+                                    This provides a natural, touch-friendly alternative to tapping navigation buttons.
+                                </p>
+                                
+                                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded-lg p-6 mb-4">
+                                    <h4 class="font-bold text-xs text-[#616161] mb-4 uppercase tracking-widest">Gesture Controls</h4>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div class="flex items-center gap-4 p-4 bg-white border border-[#e0e0e0] rounded-lg">
+                                            <div class="text-3xl">
+                                                <i class="fas fa-arrow-left text-[#0078d4]"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="font-bold text-sm text-[#242424]">Swipe Right</h5>
+                                                <p class="text-xs text-[#616161]">Select previous unassigned guest</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 p-4 bg-white border border-[#e0e0e0] rounded-lg">
+                                            <div class="text-3xl">
+                                                <i class="fas fa-arrow-right text-[#0078d4]"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="font-bold text-sm text-[#242424]">Swipe Left</h5>
+                                                <p class="text-xs text-[#616161]">Select next unassigned guest</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3 p-4 bg-purple-50 border border-purple-200 rounded-lg text-xs">
+                                        <i class="fas fa-ruler-horizontal text-purple-600 mt-0.5"></i>
+                                        <p class="text-purple-900"><strong>Swipe Threshold:</strong> A minimum swipe distance of 50 pixels is required to trigger guest navigation, preventing accidental selections.</p>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                                        <i class="fas fa-mobile-alt text-slate-600 mt-0.5"></i>
+                                        <p class="text-slate-900"><strong>Availability:</strong> Swipe gestures are only active on mobile devices. Desktop and tablet users should use the navigation arrows in the Selected Guest Banner.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Touch Targets -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-pink-600 text-white flex items-center justify-center font-bold shadow-md">
+                                    <i class="fas fa-hand-point-up"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#242424]">Enhanced Touch Targets</h3>
+                                    <p class="text-xs text-[#616161]">Improved table interaction for touchscreens</p>
+                                </div>
+                            </div>
+                            
+                            <div class="pl-13">
+                                <p class="text-sm text-[#424242] mb-4 leading-relaxed">
+                                    Tables on mobile devices are optimized for touch interaction with larger minimum touch areas and 
+                                    visual feedback to make assignments quick and error-free.
+                                </p>
+                                
+                                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded-lg p-6 mb-4">
+                                    <h4 class="font-bold text-xs text-[#616161] mb-4 uppercase tracking-widest">Touch Optimizations</h4>
+                                    <ul class="space-y-3 text-sm text-[#424242]">
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-expand-arrows-alt text-[#0078d4] mt-1"></i>
+                                            <div>
+                                                <strong>Minimum Touch Area:</strong> All tables have a minimum 60px × 60px touch target, 
+                                                meeting accessibility standards and making them easier to tap accurately.
+                                            </div>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-ban text-[#0078d4] mt-1"></i>
+                                            <div>
+                                                <strong>No Double-Tap Zoom:</strong> Tables include <code class="px-1 py-0.5 bg-slate-100 rounded text-[10px]">touch-action: manipulation</code> 
+                                                to prevent the iOS double-tap zoom delay, ensuring instant response.
+                                            </div>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <i class="fas fa-dot-circle text-[#0078d4] mt-1"></i>
+                                            <div>
+                                                <strong>Visual Feedback:</strong> When a guest is selected, available tables pulse with a subtle animation 
+                                                to indicate they are ready to receive the assignment.
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg text-xs">
+                                    <i class="fas fa-universal-access text-green-600 mt-0.5"></i>
+                                    <p class="text-green-900"><strong>Accessibility:</strong> These enhancements follow WCAG guidelines for touch target sizes, making the app more accessible for users with motor impairments.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mt-12 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
+                        <h4 class="font-bold text-sm text-[#242424] mb-3 flex items-center gap-2">
+                            <i class="fas fa-sparkles text-[#0078d4]"></i>
+                            Mobile Experience Summary
+                        </h4>
+                        <p class="text-xs text-[#616161] leading-relaxed mb-3">
+                            These mobile-optimized features work together to create a seamless guest assignment workflow on smartphones. 
+                            By reducing context switching and providing touch-friendly controls, you can efficiently seat guests as they 
+                            arrive without the friction of navigating between multiple views.
+                        </p>
+                        <div class="flex items-center gap-2 text-[10px]">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">Quick Access Panel</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">Context Banner</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-semibold">Auto Navigation</span>
+                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-semibold">Swipe Controls</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 5: Working with Guests -->
+                <section id="working-guests">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">5. Working with Guests</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="p-6 bg-[#fdfdfd] border border-[#e0e0e0] rounded-lg shadow-sm">
+                            <h4 class="font-bold mb-4 flex items-center gap-2 text-sm uppercase text-[#616161] tracking-widest">Add / Edit Party</h4>
+                            <ol class="space-y-4 text-sm text-[#424242]">
+                                <li><strong>01</strong> Click <strong>"+ Add Party"</strong> in the left panel.</li>
+                                <li><strong>02</strong> Define the Party Name & Size.</li>
+                                <li><strong>03</strong> Use <strong>+/-</strong> buttons on existing cards to adjust sizes on the fly.</li>
+                            </ol>
+                        </div>
+                        <div class="p-6 bg-[#fdfdfd] border border-[#e0e0e0] rounded-lg shadow-sm">
+                            <h4 class="font-bold mb-4 flex items-center gap-2 text-sm uppercase text-[#616161] tracking-widest">Guest Notes</h4>
+                            <p class="text-xs text-[#616161] mb-4 leading-relaxed">Assign dietary restrictions, wheelchair access needs, or VIP statuses by clicking the pencil icon (✏️).</p>
+                            <div class="flex items-center gap-2 text-[10px] text-[#0078d4] font-bold">
+                                <span class="px-2 py-0.5 border border-[#0078d4] rounded">ENTER to save</span>
+                                <span class="px-2 py-0.5 border border-[#0078d4] rounded">ESC to cancel</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 7: Multi-Table Party Management -->
+                <section id="multi-table">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">7. Multi-Table Party Management</h2>
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <p class="text-sm text-[#424242] leading-relaxed mb-6">Large groups can be split across multiple tables. The system automatically tracks where every member of a party is seated.</p>
+                            <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                                <h5 class="font-bold text-xs text-blue-900 mb-2 uppercase tracking-wide">Split Assignment Logic</h5>
+                                <p class="text-xs text-blue-800 italic">"Also seated at: Table 5 (4 seats)"</p>
+                            </div>
+                        </div>
+                        <div class="rounded-xl overflow-hidden border border-[#e0e0e0] shadow-lg">
+                            <div class="bg-slate-800 p-2 text-white text-[10px] flex items-center gap-2">
+                                <div class="flex gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                </div>
+                                System Interaction Preview
+                            </div>
+                            <img src="https://github.com/US-Dining-Room-Kitchen/SeatingChart/blob/main/Adjust%20Multi-Table%20Parties.gif?raw=true" alt="Multi-table Adjustment" class="w-full">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 9: Creating Custom Layouts -->
+                <section id="custom-layouts">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">9. Creating Custom Layouts</h2>
+                    <p class="text-sm text-[#616161] mb-8">Advanced users can create bespoke floor plans using the <strong>Layout Creator</strong> tool (<code>LayoutCreator.html</code>).</p>
+                    
+                    <div class="bg-slate-900 rounded-lg p-6 mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">layout.json format</span>
+                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Schema definition</span>
+                        </div>
+                        <pre class="text-[11px] text-blue-300 leading-relaxed">
+{
+  "internalId": 1,
+  "displayId": "Table 1",
+  "capacity": 10,
+  "orientation": "horizontal",
+  "gridRow": 5,
+  "gridCol": 2
+}</pre>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-[#fafafa] border-b">
+                                <tr><th class="p-3">Property</th><th class="p-3">Description</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#f0f0f0]">
+                                <tr><td class="p-3 font-semibold">internalId</td><td class="p-3">Unique number (Never change once set).</td></tr>
+                                <tr><td class="p-3 font-semibold">orientation</td><td class="p-3">"horizontal" or "vertical" layout.</td></tr>
+                                <tr><td class="p-3 font-semibold">gridRow / gridCol</td><td class="p-3">Position in the layout grid (Starts at 0).</td></tr>
+                                <tr><td class="p-3 font-semibold">capacity</td><td class="p-3">Number of seats per table (Default: 10).</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Section 10: Importing Data -->
+                <section id="importing">
+                    <h2 class="text-2xl font-bold mb-8 text-[#242424]">10. Importing Data</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="p-6 border border-[#e0e0e0] rounded-lg">
+                            <h4 class="font-bold text-sm text-[#0078d4] mb-4 uppercase tracking-widest">Guest List Import</h4>
+                            <p class="text-xs text-[#616161] mb-4">Ensure your Excel or CSV file contains exactly these column headers:</p>
+                            <ul class="text-[11px] font-bold space-y-2">
+                                <li class="p-2 bg-slate-50 rounded">Host Name</li>
+                                <li class="p-2 bg-slate-50 rounded">Seats Required</li>
+                                <li class="p-2 bg-slate-50 rounded">Notes <span class="font-normal opacity-50">(optional)</span></li>
+                            </ul>
+                        </div>
+                        <div class="p-6 border border-[#e0e0e0] rounded-lg">
+                            <h4 class="font-bold text-sm text-[#0078d4] mb-4 uppercase tracking-widest">Layout Import</h4>
+                            <ol class="text-xs text-[#616161] space-y-3">
+                                <li><strong>01</strong> Click <strong>Menu</strong> → <strong>Import Layout</strong>.</li>
+                                <li><strong>02</strong> Select your custom <code>.json</code> file.</li>
+                                <li><strong>03</strong> The map reloads with your new floor plan.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting -->
+                <section id="troubleshooting">
+                    <h2 class="text-2xl font-bold mb-10 text-[#242424]">12. Troubleshooting</h2>
+                    <div class="grid gap-4">
+                        <div class="p-5 border border-[#e0e0e0] rounded-lg bg-[#fdfdfd]">
+                            <h5 class="font-bold text-sm text-[#242424] mb-1 uppercase tracking-tighter">Guest import fails</h5>
+                            <p class="text-xs text-[#616161]">Verify that your Excel/CSV has the correct column headers (Host Name, Seats Required).</p>
+                        </div>
+                        <div class="p-5 border border-[#e0e0e0] rounded-lg bg-[#fdfdfd]">
+                            <h5 class="font-bold text-sm text-[#242424] mb-1 uppercase tracking-tighter">Tables not displaying</h5>
+                            <p class="text-xs text-[#616161]">Check the layout JSON for valid <code>gridRow</code> and <code>gridCol</code> coordinate values.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="pt-24 border-t border-[#f0f0f0] text-center">
+                    <p class="text-[10px] text-[#94a3b8] font-bold uppercase tracking-widest italic">Visual Seating Planner Rev 1.0 | Fluent 2 System</p>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menu-toggle');
+        
+        menuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === `#${current}`) {
+                    link.classList.add("active");
+                }
+            });
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>
