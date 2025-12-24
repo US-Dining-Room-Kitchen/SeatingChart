@@ -51,7 +51,7 @@ export const MobileQuickAssignPanel: React.FC<MobileQuickAssignPanelProps> = ({
         </div>
 
         {/* Horizontal scrollable guest list */}
-        <div className="overflow-x-auto pb-2 -mx-4 px-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="overflow-x-auto pb-2 -mx-4 px-4">
           <div className="flex gap-2 min-w-min">
             {unassignedGuests.map(({ guest, remaining }) => {
               const isSelected = selectedGuestId === guest.id;

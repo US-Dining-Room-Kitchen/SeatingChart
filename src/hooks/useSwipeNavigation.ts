@@ -11,6 +11,10 @@ interface UseSwipeNavigationOptions {
   enabled?: boolean;
 }
 
+// Swipe timing constraints to prevent accidental triggers
+const MIN_SWIPE_TIME_MS = 50;
+const MAX_SWIPE_TIME_MS = 500;
+
 /**
  * Custom hook for handling horizontal swipe gestures to navigate between items
  * 
@@ -65,8 +69,8 @@ export function useSwipeNavigation(
       // Only trigger if primarily horizontal swipe (not vertical scroll)
       const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
       
-      // Ignore if too slow (> 500ms) or too fast (< 50ms)
-      if (deltaTime < 50 || deltaTime > 500) return;
+      // Ignore if too slow or too fast to prevent accidental triggers
+      if (deltaTime < MIN_SWIPE_TIME_MS || deltaTime > MAX_SWIPE_TIME_MS) return;
       
       if (isHorizontalSwipe && Math.abs(deltaX) >= minSwipeDistance) {
         if (deltaX > 0) {

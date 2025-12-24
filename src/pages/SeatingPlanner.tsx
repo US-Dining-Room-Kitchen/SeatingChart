@@ -73,6 +73,9 @@ export const SeatingPlanner: React.FC = () => {
   const [selectedLayoutFile, setSelectedLayoutFile] = useState('');
   const [showMobileQuickAssign, setShowMobileQuickAssign] = useState(false);
 
+  // Helper to check if on mobile (memoized to avoid repeated window access)
+  const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 1024, []);
+
   // Refs
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapContentRef = useRef<HTMLDivElement>(null);
@@ -202,7 +205,7 @@ export const SeatingPlanner: React.FC = () => {
   useSwipeNavigation(mapContainerRef, {
     onSwipeLeft: navigateToNextGuest,
     onSwipeRight: navigateToPreviousGuest,
-    enabled: activeView === 'map' && window.innerWidth < 1024,
+    enabled: activeView === 'map' && isMobile,
   });
 
   // Notification helper
@@ -523,7 +526,7 @@ export const SeatingPlanner: React.FC = () => {
     if (seatsToAssign === remainingGuest) {
       setSelectedGuestId(null);
       // Auto-return to list view on mobile after full assignment
-      if (window.innerWidth < 1024) {
+      if (isMobile) {
         setActiveView('list');
       }
     }
@@ -545,7 +548,7 @@ export const SeatingPlanner: React.FC = () => {
       setSelectedGuestId(null);
     } else {
       setSelectedGuestId(guestId);
-      if (window.innerWidth < 1024) {
+      if (isMobile) {
         setActiveView('map');
       }
     }
@@ -576,7 +579,7 @@ export const SeatingPlanner: React.FC = () => {
     setSelectedGuestId(guestId);
     setModalData(null);
     const guest = guests.find(g => g.id === guestId);
-    if (window.innerWidth < 1024) {
+    if (isMobile) {
       setActiveView('map');
     }
     if (guest) {
@@ -610,6 +613,33 @@ export const SeatingPlanner: React.FC = () => {
   const modalTable = modalData ? (tables.find(t => t.internalId === modalData.tableId) || null) : null;
   const modalGuests = modalData ? tableAssignments[modalData.tableId]?.guests || [] : [];
   const unmergeGuest = guests.find(g => g.id === unmergeModalState.guestId);
+  
+  // Helper to render selected guest banner
+  const renderSelectedGuestBanner = () => {
+    if (!selectedGuestId || activeView !== 'map') return null;
+    
+    const selectedGuestData = unassignedGuests.find(
+      item => item.guest.id === selectedGuestId
+    );
+    if (!selectedGuestData) return null;
+
+    const currentIndex = unassignedGuests.findIndex(
+      item => item.guest.id === selectedGuestId
+    );
+
+    return (
+      <SelectedGuestBanner
+        guest={selectedGuestData.guest}
+        remainingSeats={selectedGuestData.remaining}
+        onPrevious={navigateToPreviousGuest}
+        onNext={navigateToNextGuest}
+        onClose={() => setSelectedGuestId(null)}
+        hasPrevious={currentIndex > 0}
+        hasNext={currentIndex < unassignedGuests.length - 1}
+      />
+    );
+  };
+  
   // Render
   return (
     <div className="bg-gray-100 h-full font-sans flex flex-col">
@@ -895,28 +925,7 @@ export const SeatingPlanner: React.FC = () => {
       </main>
 
       {/* Mobile Components */}
-      {selectedGuestId && activeView === 'map' && (() => {
-        const selectedGuestData = unassignedGuests.find(
-          item => item.guest.id === selectedGuestId
-        );
-        if (!selectedGuestData) return null;
-
-        const currentIndex = unassignedGuests.findIndex(
-          item => item.guest.id === selectedGuestId
-        );
-
-        return (
-          <SelectedGuestBanner
-            guest={selectedGuestData.guest}
-            remainingSeats={selectedGuestData.remaining}
-            onPrevious={navigateToPreviousGuest}
-            onNext={navigateToNextGuest}
-            onClose={() => setSelectedGuestId(null)}
-            hasPrevious={currentIndex > 0}
-            hasNext={currentIndex < unassignedGuests.length - 1}
-          />
-        );
-      })()}
+      {renderSelectedGuestBanner()}
 
       {showMobileQuickAssign && activeView === 'map' && (
         <MobileQuickAssignPanel
