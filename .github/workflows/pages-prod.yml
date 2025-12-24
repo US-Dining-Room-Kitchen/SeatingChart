@@ -1,4 +1,4 @@
-name: Deploy Production (Vite -> GitHub Pages)
+name: Deploy Production (Static -> GitHub Pages)
 
 on:
   push:
@@ -17,22 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Build (prod base)
+      - name: Prepare deployment directory
         run: |
-          REPO="${{ github.event.repository.name }}"
-          npm run build -- --base="/${REPO}/"
+          mkdir -p dist
+          cp -r *.html *.gif layouts dist/ 2>/dev/null || true
+          cp .nojekyll dist/ 2>/dev/null || true
+          ls -la dist/
 
       - name: Deploy to gh-pages root
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./dist
+          publish_dir: dist
           force_orphan: true
