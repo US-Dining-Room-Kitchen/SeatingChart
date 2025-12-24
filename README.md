@@ -30,7 +30,7 @@ A professional, production-ready web application for managing restaurant seating
 
 ## Installation
 
-1. Clone the repository:
+1. Clone the repository: 
    ```bash
    git clone https://github.com/US-Dining-Room-Kitchen/SeatingChart.git
    cd SeatingChart
