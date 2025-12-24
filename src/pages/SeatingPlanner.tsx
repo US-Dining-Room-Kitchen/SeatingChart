@@ -620,7 +620,7 @@ export const SeatingPlanner: React.FC = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Visual Seating Planner</h1>
           <div className="flex items-center gap-4">
             <button
-              onClick={() => window.open('/documentation.html', '_blank')}
+              onClick={() => window.open('documentation.html', '_blank')}
               className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
             >
               Help
