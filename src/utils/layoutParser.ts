@@ -30,7 +30,7 @@ export function parseLayoutData(layoutData: unknown): Table[] {
  * @throws Error if the layout cannot be loaded or parsed
  */
 export async function loadLayoutFromUrl(url: string): Promise<Table[]> {
-  const response = await fetch(url);
+  const response = await fetch(new URL(url, import.meta.env.BASE_URL).toString());
   
   if (!response.ok) {
     throw new Error('Layout file not found');
@@ -47,7 +47,7 @@ export async function loadLayoutFromUrl(url: string): Promise<Table[]> {
  */
 export async function loadLayoutOptions(): Promise<LayoutOption[]> {
   try {
-    const response = await fetch('./layouts/layouts.json');
+    const response = await fetch(new URL('layouts/layouts.json', import.meta.env.BASE_URL).toString());
     
     if (!response.ok) {
       console.warn('Failed to load layouts list');
