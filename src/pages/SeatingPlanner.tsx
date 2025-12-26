@@ -73,9 +73,6 @@ export const SeatingPlanner: React.FC = () => {
   const [selectedLayoutFile, setSelectedLayoutFile] = useState('');
   const [showMobileQuickAssign, setShowMobileQuickAssign] = useState(false);
 
-  // Helper to check if on mobile (memoized to avoid repeated window access)
-  const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 1024, []);
-
   // Refs
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapContentRef = useRef<HTMLDivElement>(null);
@@ -205,7 +202,7 @@ export const SeatingPlanner: React.FC = () => {
   useSwipeNavigation(mapContainerRef, {
     onSwipeLeft: navigateToNextGuest,
     onSwipeRight: navigateToPreviousGuest,
-    enabled: activeView === 'map' && isMobile,
+    enabled: activeView === 'map' && window.innerWidth < 1024,
   });
 
   // Notification helper
@@ -526,7 +523,8 @@ export const SeatingPlanner: React.FC = () => {
     if (seatsToAssign === remainingGuest) {
       setSelectedGuestId(null);
       // Auto-return to list view on mobile after full assignment
-      if (isMobile) {
+      // BUT only if not using the quick assign panel (to allow rapid assignments)
+      if (window.innerWidth < 1024 && !showMobileQuickAssign) {
         setActiveView('list');
       }
     }
@@ -548,7 +546,7 @@ export const SeatingPlanner: React.FC = () => {
       setSelectedGuestId(null);
     } else {
       setSelectedGuestId(guestId);
-      if (isMobile) {
+      if (window.innerWidth < 1024) {
         setActiveView('map');
       }
     }
@@ -579,7 +577,7 @@ export const SeatingPlanner: React.FC = () => {
     setSelectedGuestId(guestId);
     setModalData(null);
     const guest = guests.find(g => g.id === guestId);
-    if (isMobile) {
+    if (window.innerWidth < 1024) {
       setActiveView('map');
     }
     if (guest) {
