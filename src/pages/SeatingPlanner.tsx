@@ -4,6 +4,7 @@ import type { Guest, Table, Assignments, LayoutOption, GuestWithAssignment } fro
 import { parseGuestFile } from '../utils/fileParser';
 import { loadLayoutOptions, loadLayoutFromUrl as utilLoadLayout, parseLayoutFile } from '../utils/layoutParser';
 import { usePinchZoom } from '../hooks/usePinchZoom';
+import { useSwipeNavigation } from '../hooks/useSwipeNavigation';
 import { Notification } from '../components/ui/Notification';
 import { ConfirmationModal } from '../components/ui/ConfirmationModal';
 import { GuestCard } from '../components/seating/GuestCard';
@@ -13,6 +14,8 @@ import { AddPartyModal } from '../components/seating/AddPartyModal';
 import { SplashScreen } from '../components/seating/SplashScreen';
 import { SettingsMenu } from '../components/seating/SettingsMenu';
 import { ZoomControls } from '../components/seating/ZoomControls';
+import { MobileQuickAssignPanel } from '../components/seating/MobileQuickAssignPanel';
+import { SelectedGuestBanner } from '../components/seating/SelectedGuestBanner';
 
 const DEFAULT_TABLE_CAPACITY = 10;
 
@@ -68,6 +71,7 @@ export const SeatingPlanner: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [layoutOptions, setLayoutOptions] = useState<LayoutOption[]>([]);
   const [selectedLayoutFile, setSelectedLayoutFile] = useState('');
+  const [showMobileQuickAssign, setShowMobileQuickAssign] = useState(false);
 
   // Refs
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -160,6 +164,46 @@ export const SeatingPlanner: React.FC = () => {
 
   // Set up pinch zoom for different containers
   usePinchZoom(mapContainerRef, scaleRef, setScale, setIsPinching);
+
+  // Guest navigation handlers for mobile
+  const navigateToNextGuest = () => {
+    if (unassignedGuests.length === 0) return;
+    
+    const currentIndex = unassignedGuests.findIndex(
+      item => item.guest.id === selectedGuestId
+    );
+    
+    if (currentIndex === -1) {
+      // No guest selected, select first
+      setSelectedGuestId(unassignedGuests[0].guest.id);
+    } else if (currentIndex < unassignedGuests.length - 1) {
+      // Select next guest
+      setSelectedGuestId(unassignedGuests[currentIndex + 1].guest.id);
+    }
+  };
+
+  const navigateToPreviousGuest = () => {
+    if (unassignedGuests.length === 0) return;
+    
+    const currentIndex = unassignedGuests.findIndex(
+      item => item.guest.id === selectedGuestId
+    );
+    
+    if (currentIndex === -1) {
+      // No guest selected, select last
+      setSelectedGuestId(unassignedGuests[unassignedGuests.length - 1].guest.id);
+    } else if (currentIndex > 0) {
+      // Select previous guest
+      setSelectedGuestId(unassignedGuests[currentIndex - 1].guest.id);
+    }
+  };
+
+  // Set up swipe navigation for mobile
+  useSwipeNavigation(mapContainerRef, {
+    onSwipeLeft: navigateToNextGuest,
+    onSwipeRight: navigateToPreviousGuest,
+    enabled: activeView === 'map' && window.innerWidth < 1024,
+  });
 
   // Notification helper
   const displayNotification = (msg: string, type: 'info' | 'error') => {
@@ -478,6 +522,11 @@ export const SeatingPlanner: React.FC = () => {
 
     if (seatsToAssign === remainingGuest) {
       setSelectedGuestId(null);
+      // Auto-return to list view on mobile after full assignment
+      // BUT only if not using the quick assign panel (to allow rapid assignments)
+      if (window.innerWidth < 1024 && !showMobileQuickAssign) {
+        setActiveView('list');
+      }
     }
   };
 
@@ -500,6 +549,14 @@ export const SeatingPlanner: React.FC = () => {
       if (window.innerWidth < 1024) {
         setActiveView('map');
       }
+    }
+  };
+
+  const handleMobileQuickAssignSelect = (guestId: string) => {
+    if (selectedGuestId === guestId) {
+      setSelectedGuestId(null);
+    } else {
+      setSelectedGuestId(guestId);
     }
   };
 
@@ -554,6 +611,33 @@ export const SeatingPlanner: React.FC = () => {
   const modalTable = modalData ? (tables.find(t => t.internalId === modalData.tableId) || null) : null;
   const modalGuests = modalData ? tableAssignments[modalData.tableId]?.guests || [] : [];
   const unmergeGuest = guests.find(g => g.id === unmergeModalState.guestId);
+  
+  // Helper to render selected guest banner
+  const renderSelectedGuestBanner = () => {
+    if (!selectedGuestId || activeView !== 'map') return null;
+    
+    const selectedGuestData = unassignedGuests.find(
+      item => item.guest.id === selectedGuestId
+    );
+    if (!selectedGuestData) return null;
+
+    const currentIndex = unassignedGuests.findIndex(
+      item => item.guest.id === selectedGuestId
+    );
+
+    return (
+      <SelectedGuestBanner
+        guest={selectedGuestData.guest}
+        remainingSeats={selectedGuestData.remaining}
+        onPrevious={navigateToPreviousGuest}
+        onNext={navigateToNextGuest}
+        onClose={() => setSelectedGuestId(null)}
+        hasPrevious={currentIndex > 0}
+        hasNext={currentIndex < unassignedGuests.length - 1}
+      />
+    );
+  };
+  
   // Render
   return (
     <div className="bg-gray-100 h-full font-sans flex flex-col">
@@ -811,8 +895,44 @@ export const SeatingPlanner: React.FC = () => {
             onZoomOut={() => setScale(s => Math.max(s - 0.1, 0.2))}
             onReset={calculateScale}
           />
+          
+          {/* Mobile Quick Assign Toggle Button */}
+          {!showMobileQuickAssign && unassignedGuests.length > 0 && (
+            <button
+              onClick={() => setShowMobileQuickAssign(true)}
+              className="lg:hidden fixed bottom-4 right-4 z-10 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-colors"
+              aria-label="Show quick assign panel"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </button>
+          )}
         </div>
       </main>
+
+      {/* Mobile Components */}
+      {renderSelectedGuestBanner()}
+
+      {showMobileQuickAssign && activeView === 'map' && (
+        <MobileQuickAssignPanel
+          unassignedGuests={unassignedGuests}
+          selectedGuestId={selectedGuestId}
+          onSelectGuest={handleMobileQuickAssignSelect}
+          onClose={() => setShowMobileQuickAssign(false)}
+        />
+      )}
     </div>
   );
 };

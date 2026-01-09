@@ -41,11 +41,16 @@ export const TableVisual: React.FC<TableVisualProps> = ({
   );
 
   const hoverClass = isSelectedGuest ? 'hover:outline-blue-500 hover:bg-blue-100' : '';
+  const pulseAnimation = isSelectedGuest ? 'animate-pulse' : '';
+  
+  // Responsive touch targets - larger on mobile for easier tapping
+  const touchTargetClass = 'lg:w-28 lg:h-28 min-w-[60px] min-h-[60px]';
 
   return (
     <div 
       onClick={onClick} 
-      className={`p-2 rounded-lg outline outline-2 outline-dashed outline-gray-300 bg-gray-50 transition-all duration-200 cursor-pointer w-28 h-28 flex flex-col items-center justify-center ${hoverClass}`}
+      className={`p-2 rounded-lg outline outline-2 outline-dashed outline-gray-300 bg-gray-50 transition-all duration-200 cursor-pointer w-28 h-28 flex flex-col items-center justify-center ${hoverClass} ${pulseAnimation} ${touchTargetClass}`}
+      style={{ touchAction: 'manipulation' }}
     >
       {orientation === 'horizontal' ? (
         <div className="flex flex-col items-center justify-center">
